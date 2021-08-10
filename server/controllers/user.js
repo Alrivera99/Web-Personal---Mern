@@ -66,10 +66,14 @@ function signIn(req, res){
                         if(!userStored.active){
                             res.status(200).send({code: 200, message:"El usuario no se ha activado."});
                         } else {
-                            res.status(200).send({
-                                accessToken: jwt.createAccessToken(userStored),
-                                refreshToken: jwt.createRefreshToken(userStored)
-                            });
+                            if(userStored.role === "admin"){
+                                res.status(200).send({
+                                    accessToken: jwt.createAccessToken(userStored),
+                                    refreshToken: jwt.createRefreshToken(userStored)
+                                }); 
+                            }else{
+                                res.status(404).send({message: "Este usuario no es valido."})
+                            }
                         }
                     }
                 });
@@ -87,6 +91,7 @@ function getUsers(req, res){
         }
     })
 }
+
 function getUsersActive(req, res){
     const query = req.query;
     
@@ -256,6 +261,7 @@ function signUpAdmin(req, res){
         });   
     }
 }
+
 module.exports={
     signUp, 
     signIn,
